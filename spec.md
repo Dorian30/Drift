@@ -77,3 +77,11 @@ Whenever you're ready, I can build the Phase 1 Mac menu bar app directly — hap
 - [even-realities/EvenDemoApp](https://github.com/even-realities/EvenDemoApp) — official G1 demo app, BLE protocol details, display/text-push capabilities
 - [galfaroth/awesome-even-realities-g1](https://github.com/galfaroth/awesome-even-realities-g1) — community project index, including the `even_glasses` Python BLE library
 - [Even Realities smart glasses product page](https://www.evenrealities.com/smart-glasses)
+
+---
+
+### Research grounding
+
+The claims behind this plan were source-checked. Some of them did not hold up, including the
+widely-quoted "23 minutes to refocus" figure. See [research.md](research.md) for each claim,
+its verdict, and what it changes in the design.
