@@ -42,10 +42,158 @@ Per your call: **any change of the frontmost application** (VS Code → Slack �
 
 Given this is a personal daily-driver tool, I'd lean Swift for the long-term version but Python+`rumps` is the faster way to get a working prototype to actually live with for a week before committing to native.
 
+## The focus budget (Phase 1.5)
+
+Phase 1 answers "how often did I switch". That number is honest but flat. A day with 80 switches
+between two files is not the same as a day with 80 switches into Slack. Phase 1.5 adds a model
+that prices switching in the same unit as the work itself.
+
+### What this model does not claim
+
+Focus is not a battery. The theory that willpower drains like a tank, called ego depletion, failed
+a preregistered replication across 23 labs with 2,141 participants. See
+[research.md](research.md), claim 7. Drift never says "depleted" and never draws a battery.
+
+Drift does something narrower and defensible. You set a daily budget. Drift spends that budget
+against observed minutes, using coefficients you can see and change. The app applies a rule you
+agreed to. It does not measure your brain.
+
+One further limit, from [research.md](research.md) claim 2: Mark, Gudith and Klocke found that
+interrupted work is completed *faster*, with no loss of quality, but with more stress, frustration
+and effort. The real cost of switching does not show up in minutes. Drift counts minutes because
+minutes are what macOS can observe. Say this in the interface, and never present the minute count
+as a measure of output.
+
+### App roles
+
+The axis is not how "deep" an app is. The axis is whether a switch serves the task you are on or
+leaves it. This matters because the same app plays different roles for different people. Slack
+breaks concentration. Finder usually does not, because opening Finder is normally part of the
+work in progress.
+
+The research supports splitting the axis this way. Iqbal and Horvitz found that resumption time did
+not differ significantly between fast and slow responses to an alert, but did differ by where the
+user went (about 11 minutes for instant messaging, about 16 minutes for email). Where you go
+predicts the cost better than how long you stay away.
+
+So every bundle identifier carries one of three roles, editable by you:
+
+| Role | Meaning | Effect on a block |
+|---|---|---|
+| **Anchor** | Where the work happens. VS Code, Figma, a writing app. | Starts and holds a block. |
+| **Companion** | Serves the task in progress. Finder, Terminal, a documentation tab. | A short visit does not break the block. |
+| **Interrupting** | Leaves the task. Slack, Mail, Messages. | Always breaks the block and charges the tax. |
+
+A companion visit that runs past the grace period breaks the block anyway. Twenty minutes in
+Finder is not a quick lookup, it is a different task.
+
+Unknown apps default to interrupting. A false alarm you correct once is better than a silent
+undercount.
+
+### The model
+
+```
+budget          = 240 min/day   # your call, see research.md claim 5
+warmup_enabled  = true          # toggle, see "Warm-up" below
+warmup          = 15 min        # ramp-in time before a block counts as focused work
+min_block       = 5 min         # used when warmup is off, so blips do not count
+companion_grace = 2 min         # a visit under this does not break a block
+idle_timeout    = 10 min        # no keyboard or mouse: the clock stops, no tax
+
+reentry_cost(app):              # charged on the app you switched TO
+    chat      -> 11 min         # Iqbal & Horvitz, IM resumption phase
+    mail      -> 16 min         # Iqbal & Horvitz, email resumption phase
+    other     -> 12 min         # midpoint default
+
+# A block starts on an anchor app and holds through short companion visits.
+# It ends on an interrupting app, on a long companion visit, or on idle.
+
+focused_minutes(b):
+    if warmup_enabled:
+        return max(0, duration(b) - warmup)          # the ramp-in does not count
+    else:
+        return duration(b) if duration(b) >= min_block else 0
+
+focused_minutes = sum(focused_minutes(b) for b in blocks)
+switch_tax      = sum(reentry_cost(a) for each block that began after an interrupting switch)
+spent           = focused_minutes + switch_tax
+```
+
+### Warm-up
+
+Warm-up is the ramp-in time at the start of a block, before the work becomes real work. With the
+toggle on, the first 15 minutes of every block earn nothing. A 20-minute block contributes 5
+focused minutes. A 12-minute block contributes none.
+
+This setting is a working assumption, not a research finding, and the interface says so. No study
+establishes a time to reach flow. See [research.md](research.md), claim 6. The absence of a study
+is not evidence that ramp-in does not exist. It only means Drift cannot cite a number, so it must
+not present one as a fact.
+
+The toggle is the honest way to hold both positions at once:
+
+- **On** (default): ramp-in costs you, and fragmentation is punished hard, because a day of
+  20-minute blocks earns very little.
+- **Off**: a block counts from its first minute, and only `min_block` filters out blips.
+
+Run a week each way and compare. If warm-up is real for you, the two numbers will disagree in a way
+that matches how the weeks actually felt. The default of 15 minutes comes from the measured
+resumption phase in claim 3, not from the folklore figure of 15 to 20 minutes to reach flow.
+
+Rules that keep the number honest:
+
+- The first block of the day pays no tax. You are not resuming anything yet.
+- Idle time charges nothing. Lunch is not a context switch.
+- `spent` is allowed to pass 100 percent of the budget. That is a real signal, not an error.
+- Fragmentation costs even when no block qualifies. Six trips to Slack charge six re-entry costs
+  whether or not the work between them ever reached 15 minutes. This is deliberate. Iqbal and
+  Horvitz found that tasks abandoned after less than 5 minutes had a 10 percent chance of never
+  being resumed within 2 hours.
+
+### What it shows
+
+One line in the dropdown:
+
+> 2h 40m focused. 1h 05m switch tax. 3h 45m of your 4h budget.
+
+The switch tax is the product. It puts a price on switching in the same unit as the work, which is
+the only way to compare them.
+
+### Honesty requirements
+
+These are constraints on the feature, not suggestions:
+
+- Every coefficient above is visible and editable in the interface. If the numbers feel wrong after
+  a week, you change them instead of distrusting the app.
+- The budget is labelled as a setting, not as a fact about you. The 4-hour figure is a
+  generalization of a 1993 study of violin students who practiced 3.5 hours a day. It is a
+  reasonable default and nothing more.
+- Drift reports the number and the tax. It never draws the conclusion. An app that announces your
+  focus is spent at 2pm becomes a permission slip to stop working, which inverts the point.
+- Warm-up is never called "time to reach flow", and never presented as measured. It is labelled as
+  your setting, it carries a link to [research.md](research.md) claim 6, and it can be switched off.
+
+### Open questions for this phase
+
+- Does the per-app re-entry cost feel right, or does the cost need to depend on how deep the broken
+  block was? Iqbal and Horvitz measured alert-driven interruptions. Drift charges self-driven
+  switches the same way, which the study does not cover.
+- Does warm-up hold up against a week of your own data with the toggle off? This is the one
+  coefficient with no measurement behind it, so it is the one most worth testing against your
+  own experience.
+- Companion apps are companions relative to a task, not absolutely. A per-project companion set is
+  the obvious refinement, and the obvious complexity. Live with the flat list first.
+- The standard deviations in the source study are as large as the means. Daily numbers will be
+  noisy. Weekly totals are likely the honest unit of display.
+
 ## Phased roadmap
 
 **Phase 1 — Mac tracker (this is the buildable "today" version)**
 Menu bar app, local logging, live count in the menu bar, a dropdown with today's stats and top offenders. Ships as something you actually run daily.
+
+**Phase 1.5 — Focus budget and switch tax**
+Price the switching. See "The focus budget" above for the model, the coefficients, and the
+honesty constraints that go with it.
 
 **Phase 2 — Better visualization**
 A small daily/weekly view — trend of switches over time, which hours of the day are worst, correlation with calendar meetings if you want to get fancy (reading your calendar locally, not syncing anywhere). This is where a proper chart (not just numbers) starts to matter.
