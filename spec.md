@@ -94,7 +94,9 @@ undercount.
 
 ```
 budget          = 240 min/day   # your call, see research.md claim 5
-block_threshold = 15 min        # shortest run that counts as focused work
+warmup_enabled  = true          # toggle, see "Warm-up" below
+warmup          = 15 min        # ramp-in time before a block counts as focused work
+min_block       = 5 min         # used when warmup is off, so blips do not count
 companion_grace = 2 min         # a visit under this does not break a block
 idle_timeout    = 10 min        # no keyboard or mouse: the clock stops, no tax
 
@@ -106,10 +108,37 @@ reentry_cost(app):              # charged on the app you switched TO
 # A block starts on an anchor app and holds through short companion visits.
 # It ends on an interrupting app, on a long companion visit, or on idle.
 
-focused_minutes = sum(duration(b) for b in blocks if duration(b) >= block_threshold)
+focused_minutes(b):
+    if warmup_enabled:
+        return max(0, duration(b) - warmup)          # the ramp-in does not count
+    else:
+        return duration(b) if duration(b) >= min_block else 0
+
+focused_minutes = sum(focused_minutes(b) for b in blocks)
 switch_tax      = sum(reentry_cost(a) for each block that began after an interrupting switch)
 spent           = focused_minutes + switch_tax
 ```
+
+### Warm-up
+
+Warm-up is the ramp-in time at the start of a block, before the work becomes real work. With the
+toggle on, the first 15 minutes of every block earn nothing. A 20-minute block contributes 5
+focused minutes. A 12-minute block contributes none.
+
+This setting is a working assumption, not a research finding, and the interface says so. No study
+establishes a time to reach flow. See [research.md](research.md), claim 6. The absence of a study
+is not evidence that ramp-in does not exist. It only means Drift cannot cite a number, so it must
+not present one as a fact.
+
+The toggle is the honest way to hold both positions at once:
+
+- **On** (default): ramp-in costs you, and fragmentation is punished hard, because a day of
+  20-minute blocks earns very little.
+- **Off**: a block counts from its first minute, and only `min_block` filters out blips.
+
+Run a week each way and compare. If warm-up is real for you, the two numbers will disagree in a way
+that matches how the weeks actually felt. The default of 15 minutes comes from the measured
+resumption phase in claim 3, not from the folklore figure of 15 to 20 minutes to reach flow.
 
 Rules that keep the number honest:
 
@@ -141,14 +170,17 @@ These are constraints on the feature, not suggestions:
   reasonable default and nothing more.
 - Drift reports the number and the tax. It never draws the conclusion. An app that announces your
   focus is spent at 2pm becomes a permission slip to stop working, which inverts the point.
-- The warm-up threshold is named as a block threshold, never as "time to reach flow". No primary
-  source establishes a time to reach flow. See [research.md](research.md) claim 6.
+- Warm-up is never called "time to reach flow", and never presented as measured. It is labelled as
+  your setting, it carries a link to [research.md](research.md) claim 6, and it can be switched off.
 
 ### Open questions for this phase
 
 - Does the per-app re-entry cost feel right, or does the cost need to depend on how deep the broken
   block was? Iqbal and Horvitz measured alert-driven interruptions. Drift charges self-driven
   switches the same way, which the study does not cover.
+- Does warm-up hold up against a week of your own data with the toggle off? This is the one
+  coefficient with no measurement behind it, so it is the one most worth testing against your
+  own experience.
 - Companion apps are companions relative to a task, not absolutely. A per-project companion set is
   the obvious refinement, and the obvious complexity. Live with the flat list first.
 - The standard deviations in the source study are as large as the means. Daily numbers will be
