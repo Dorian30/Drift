@@ -16,6 +16,8 @@ Read the "What this means for Drift" line under each claim. That line is the rea
 
 **Verdict: Unsupported as a citation. The underlying effect is real, but this number is not.**
 
+**Sources:** [Interruptions cost 23 minutes 15 seconds, right?](https://blog.oberien.de/2023/11/05/23-minutes-15-seconds.html) (the source check) and [Too Many Interruptions at Work?](https://news.gallup.com/businessjournal/23146/too-many-interruptions-work.aspx) (Gallup, the earliest traceable appearance).
+
 An independent source check examined five of the papers most often cited for this figure. None of them contains the number. The earliest traceable appearance is a 2006 Gallup interview with Gloria Mark about her fieldwork, not a published paper.
 
 The most-cited paper, Mark, Gudith and Klocke (CHI 2008), never uses the number 23. That paper reports something different, covered in claim 2 below.
@@ -28,7 +30,10 @@ The most-cited paper, Mark, Gudith and Klocke (CHI 2008), never uses the number 
 
 **Verdict: Solid, and it contradicts the popular reading.**
 
-Mark, Gudith and Klocke (CHI 2008), "The Cost of Interrupted Work: More Speed and Stress". From the abstract:
+**Source:** Mark, G., Gudith, D., Klocke, U. (2008). The Cost of Interrupted Work: More Speed and Stress. CHI 2008.
+[Free PDF](https://www.ics.uci.edu/~gmark/chi08-mark.pdf) - [ACM](https://dl.acm.org/doi/10.1145/1357054.1357072) - [ResearchGate](https://www.researchgate.net/publication/221518077_The_cost_of_interrupted_work_More_speed_and_stress)
+
+From the abstract:
 
 > We found that context does not make a difference but surprisingly, people completed interrupted tasks in less time with no difference in quality. Our data suggests that people compensate for interruptions by working faster, but this comes at a price: experiencing more stress, higher frustration, time pressure and effort.
 
@@ -46,7 +51,10 @@ Design: a controlled lab experiment with an email task, built on earlier field o
 
 **Verdict: Solid. This is the number to build on.**
 
-Iqbal and Horvitz (CHI 2007), "Disruption and Recovery of Computing Tasks: Field Study, Analysis, and Directions". A field study of 27 users over two weeks, using a logging tool that recorded application and window switches plus incoming email and instant-message alerts.
+**Source:** Iqbal, S. T., Horvitz, E. (2007). Disruption and Recovery of Computing Tasks: Field Study, Analysis, and Directions. CHI 2007.
+[Free PDF](http://erichorvitz.com/CHI_2007_Iqbal_Horvitz.pdf) - [ACM](https://dl.acm.org/doi/10.1145/1240624.1240730) - [Academia.edu](https://www.academia.edu/12906299/Disruption_and_recovery_of_computing_tasks)
+
+A field study of 27 users over two weeks, using a logging tool that recorded application and window switches plus incoming email and instant-message alerts.
 
 From the summary:
 
@@ -76,7 +84,8 @@ Three further findings from the same paper matter for the design:
 
 **Verdict: Solid. This is the mechanism behind the whole project.**
 
-Leroy (2009), "Why is it so hard to do my work? The challenge of attention residue when switching between work tasks", Organizational Behavior and Human Decision Processes, volume 109, pages 168 to 181.
+**Source:** Leroy, S. (2009). Why is it so hard to do my work? The challenge of attention residue when switching between work tasks. *Organizational Behavior and Human Decision Processes* 109(2), 168-181. Paywalled.
+[RePEc listing](https://ideas.repec.org/a/eee/jobhdp/v109y2009i2p168-181.html) - [Semantic Scholar](https://www.semanticscholar.org/paper/Why-is-it-so-hard-to-do-my-work-The-challenge-of-Leroy/58a602c378da63993ab19b514e1bd57817bc18e5) - [ResearchGate](https://www.researchgate.net/publication/46489122_Why_is_it_so_Hard_to_do_My_Work_The_Challenge_of_Attention_Residue_when_Switching_Between_Work_Tasks)
 
 Leroy found that part of your attention stays on the previous task after you switch, and that this residue lowers performance on the next task. Participants who left a task unfinished performed worse on the following task than participants who finished it. The effect is strongest when the previous task was unfinished, time-pressured or emotionally engaging.
 
@@ -87,6 +96,9 @@ Leroy found that part of your attention stays on the previous task after you swi
 ## 5. Four hours of deep work per day
 
 **Verdict: Partial. The real number is 3.5 hours, and it comes from violinists.**
+
+**Sources:** Ericsson, K. A., Krampe, R. T., Tesch-Römer, C. (1993). The Role of Deliberate Practice in the Acquisition of Expert Performance. *Psychological Review* 100(3), 363-406. Read here through the 2019 replication paper that restates its design and figures:
+[Macnamara & Maitra (2019), Royal Society Open Science](https://royalsocietypublishing.org/rsos/article/6/8/190327/68523/The-role-of-deliberate-practice-in-expert) - [PMC full text](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6731745/) - [Free PDF](https://hhs.purdue.edu/skill-learning-and-performance-lab/wp-content/uploads/sites/43/2024/08/macnamara-maitra-2019-the-role-of-deliberate-practice-in-expert-performance-revisiting-ericsson-krampe-tesch-romer.pdf)
 
 Ericsson, Krampe and Tesch-Römer (1993) studied three groups of 10 violin students at the Music Academy of West Berlin, grouped by skill level. The two best groups practiced alone about 3.5 hours per day. The music-teacher group practiced 1.3 hours per day. The best group had accumulated over 10,000 hours by age 20.
 
@@ -100,9 +112,21 @@ Cal Newport's *Deep Work* (2016) generalized this into a roughly four-hour daily
 
 **Verdict: Unsupported. Treat it as folklore.**
 
+**Sources:** none found. That is the finding. For the flow research this claim is usually attached to, see Csikszentmihalyi's work as summarized in [Investigating the "Flow" Experience: Key Conceptual and Operational Issues](https://pmc.ncbi.nlm.nih.gov/articles/PMC7033418/), which describes the conditions for flow and gives no warm-up time.
+
 Searching for a primary source returns blog posts and productivity sites that cite each other. The estimates range from 10 to 30 minutes with no consistent origin. Csikszentmihalyi's flow research describes the conditions for flow. It does not establish a warm-up constant.
 
-**What this means for Drift:** Do not call the warm-up threshold a "time to reach flow". Call it what it is: the minimum block length that counts as focused work. Take the number from claim 3, which is measured, and let the user change it.
+**What this means for Drift:** Drift keeps a warm-up setting anyway, and this is a deliberate
+choice rather than an oversight. The absence of a study is not evidence that ramp-in time does not
+exist. It only means nobody has measured it, so Drift cannot cite a number and must not present one
+as fact.
+
+The rules that follow from that:
+
+- Warm-up is labelled in the interface as your working assumption, not as a research finding.
+- Warm-up is a toggle. Switch it off and a block counts from its first minute, so you can compare
+  your own numbers both ways.
+- The default value comes from claim 3, which is measured, rather than from the folklore figure.
 
 ---
 
@@ -110,11 +134,32 @@ Searching for a primary source returns blog posts and productivity sites that ci
 
 **Verdict: Unsupported. Do not build the model on it.**
 
+**Source:** Hagger, M. S., Chatzisarantis, N. L. D., et al. (2016). A Multilab Preregistered Replication of the Ego-Depletion Effect. *Perspectives on Psychological Science* 11(4), 546-573.
+[PubMed](https://pubmed.ncbi.nlm.nih.gov/27474142/) - [Free PDF](https://statmodeling.stat.columbia.edu/wp-content/uploads/2017/11/Hagger_0-407863.pdf) - [Commentary, PMC](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4971805/)
+
 Ego depletion is the theory that willpower is a limited resource that a day of self-control uses up. Hagger and Chatzisarantis coordinated a preregistered replication across 23 labs with 2,141 participants (published 2016). The effect was close to zero and not significantly different from zero. The earlier meta-analysis had reported d = 0.62.
 
 Time-on-task decline in sustained attention is a separate and better-established effect. It does not give a unit of "focus energy" that you can subtract per switch.
 
 **What this means for Drift:** Do not draw a battery. Do not say "depleted". Drift tracks a budget the user sets and spends it against observed minutes. Every coefficient stays visible and editable, so the app never claims to measure the user's brain.
+
+---
+
+## Also referenced
+
+**Mark, G., González, V., Harris, J. (2005). No Task Left Behind? Examining the Nature of Fragmented Work. CHI 2005.**
+[Free PDF](https://ics.uci.edu/~gmark/CHI2005.pdf) - [ACM](https://dl.acm.org/doi/10.1145/1054972.1055017)
+
+Shadowed managers, financial analysts and software developers at an outsourcing company. People
+averaged about 3 minutes on a task and about 12 minutes in a "working sphere" before switching.
+Removing interruptions shorter than 2 minutes as non-significant still left 12 minutes 18 seconds
+per working sphere. Drift takes its 2-minute companion grace period from that cutoff.
+
+**Mark, G. (2023). *Attention Span*. Hanover Square Press.**
+[Author page](https://gloriamark.com/attention-span/) - [APA interview](https://www.apa.org/news/podcasts/speaking-of-psychology/attention-spans)
+
+Reports average attention on a screen falling from 2.5 minutes in 2004, to 75 seconds in 2012, to
+47 seconds in recent measurements, with a median of 40 seconds. Trade book, not a paper.
 
 ---
 
