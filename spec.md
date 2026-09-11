@@ -64,6 +64,59 @@ A few decisions worth pinning down before writing code:
 - **Menu bar number vs. icon-only**: showing a live count in the menu bar is more useful but takes up more menu bar real estate, which is contested territory on most people's Macs.
 - **Idle handling**: should switches while you're away from the keyboard (e.g. a meeting, lunch) count? Probably not — likely worth pairing `NSWorkspace` tracking with idle-time detection so a long stretch away doesn't get miscounted as a "focus streak."
 - **Nudge threshold**: whether you want the gentle notification at all, or just want the passive stats without the app ever interrupting you.
+- **Time logging**: whether the tracker turns into a time log you confirm rather than write. Sketched under "Further exploration" below. Deliberately out of scope for the MVP.
+
+## Further exploration
+
+Ideas that are worth building eventually. None of them belong in the MVP. Phase 1 stays a switch
+counter with a local log, because that is the smallest thing that is useful on its own.
+
+### Suggested time logging
+
+The tracker already knows you spent an hour in VS Code this morning. That is one step away from a
+time log that costs you nothing to keep. At the end of a stretch of work, Drift proposes the entry
+and you accept it:
+
+> VS Code, 1h 04m across 3 blocks, 09:12 to 10:40. Log it?
+
+You confirm, attach a label, and add a note. Nothing else. The value is that the log writes itself
+from observed data instead of from memory at the end of the day.
+
+Design points that matter:
+
+- **Suggest blocks, not app totals.** Merge consecutive runs in one app, and merge across gaps
+  under 2 minutes. A morning of work becomes one entry to confirm, not forty.
+- **Suggest, never file automatically.** An unreviewed log is worse than no log, because you stop
+  trusting it and keep using something else.
+- **Never prompt during a block.** A tool that interrupts you to ask about your focus has become
+  the problem it measures. Prompt when a block ends and you stay away for more than a few minutes,
+  at a fixed time in the evening, or on demand from the menu bar.
+- **Labels are projects, not apps.** They are stored separately, because one app serves many
+  projects and one project spans many apps.
+
+Open questions: whether a label can be inferred from the git branch or the open folder, and whether
+an entry you decline is remembered so that Drift stops proposing it.
+
+### Data model this needs
+
+The Phase 1 log is one table of switches. Time logging adds derived blocks and confirmed entries
+on top of it, without changing what Phase 1 writes:
+
+```
+switches(ts, bundle_id)                       # raw, Phase 1, already in the spec
+blocks(id, start, end, bundle_id, role)       # derived from switches, not stored input
+entries(id, label, note, confirmed_at)        # user-confirmed, the only human input
+entry_blocks(entry_id, block_id)              # one entry can cover several blocks
+```
+
+`blocks` stays derived rather than written directly. Any change to the block rules then replays
+over history instead of only applying to new data, which matters while the thresholds are still
+being tuned.
+
+### Why this is deferred
+
+Time logging needs its own design session. The prompt timing alone is the hard part, and getting it
+wrong makes the app annoying enough to quit. Phase 1 has to earn daily use first.
 
 ## Next step
 
